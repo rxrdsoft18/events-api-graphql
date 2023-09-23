@@ -13,10 +13,6 @@ import { UserEntity } from './infrastructure/entities/user.entity';
     UserResolver,
     CreateUserHandler,
     UserRepositoryImpl,
-    // {
-    //   provide: 'UserRepository',
-    //   useClass: UserRepositoryImpl,
-    // },
   ],
 })
 export class UserModule {}
