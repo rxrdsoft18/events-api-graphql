@@ -9,10 +9,6 @@ import { UserEntity } from './infrastructure/entities/user.entity';
 
 @Module({
   imports: [CqrsModule, TypeOrmModule.forFeature([UserEntity])],
-  providers: [
-    UserResolver,
-    CreateUserHandler,
-    UserRepositoryImpl,
-  ],
+  providers: [UserResolver, CreateUserHandler, UserRepositoryImpl],
 })
 export class UserModule {}
