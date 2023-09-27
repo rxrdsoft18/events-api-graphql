@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject, Logger } from '@nestjs/common';
+import { ConflictException, Inject, Logger } from "@nestjs/common";
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
@@ -19,6 +19,12 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
   ) {}
   async execute(command: CreateUserCommand): Promise<UserDto> {
     const { name, email, password } = command;
+
+    const existsUser = await this.userRepository.findByEmail(email);
+
+    if (existsUser) {
+      throw new ConflictException('Email already taken');
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
