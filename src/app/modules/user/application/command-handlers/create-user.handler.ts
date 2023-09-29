@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { ConflictException, Inject, Logger } from "@nestjs/common";
+import { ConflictException, Inject, Logger } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 
