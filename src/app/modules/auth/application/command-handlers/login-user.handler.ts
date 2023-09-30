@@ -1,38 +1,21 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  Inject,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 import { LoginUserCommand } from '../commands/login-user.command';
-import { UserRepositoryImpl } from '../../../user/infrastructure/persistence/user.repository';
-import { UserRepository } from '../../../user/domain/user.repository';
 import { OutputLoginDto } from '../../presentation/graphql/dtos/types/output-login.type';
 import { UserEntity } from '../../../user/infrastructure/entities/user.entity';
+import { AuthService } from '../services/auth.service';
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserHandler implements ICommandHandler<LoginUserCommand> {
   constructor(
-    @Inject(UserRepositoryImpl)
-    private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    private readonly authService: AuthService,
   ) {}
 
   async execute(command: LoginUserCommand): Promise<OutputLoginDto> {
     const { email, password } = command;
-    const user = await this.userRepository.findByEmail(email);
-
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    if (!(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException('Email or Password invalid credential');
-    }
+    const user = await this.authService.validateUser(email, password);
 
     return {
       userId: user.id,

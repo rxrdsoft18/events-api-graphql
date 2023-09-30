@@ -27,4 +27,10 @@ export class UserRepositoryImpl implements UserRepository {
 
     return this.userRepository.save(userEntity);
   }
+
+  findById(id: string): Promise<UserEntity> {
+    return this.userRepository.findOneBy({
+      id,
+    });
+  }
 }
